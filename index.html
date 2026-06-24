@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Green Grocer – Premium Organic</title>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+
+    <style>
+        /* ============================================================
+           CSS VARIABLES – Premium Organic Palette
+           ============================================================ */
+        :root {
+            --green-primary: #2A7E4B;
+            --green-primary-dark: #1D5F36;
+            --green-primary-light: #E8F5EE;
+            --green-accent: #4CAF7A;
+            --gold-accent: #F5A623;
+            --gold-accent-light: #FDF0D5;
+            --cream-bg: #F9F7F4;
+            --white: #FFFFFF;
+            --text-primary: #1A1A1A;
+            --text-secondary: #5A6A66;
+            --text-muted: #8A9A96;
+            --border-light: #E2E8E6;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.12);
+            --shadow-xl: 0 24px 64px rgba(0, 0, 0, 0.16);
+
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 32px;
+            --radius-full: 999px;
+
+            --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --phone-width: 390px;
+            --phone-height: 844px;
+            --status-height: 44px;
+        }
+
+        /* ============================================================
+           RESET & BASE
+           ============================================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background: #E2E8E6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            margin: 0;
+            background-image: radial-gradient(circle at 20% 50%, rgba(42, 126, 75, 0.03) 0%, transparent 50%),
+                              radial-gradient(circle at 80% 50%, rgba(245, 166, 35, 0.03) 0%, transparent 50%);
+        }
+
+        /* ============================================================
+           PHONE FRAME – Realistic Bezel + Dynamic Island
+           ============================================================ */
+        .phone-frame {
+            width: var(--phone-width);
+            height: var(--phone-height);
+            background: var(--white);
+            border-radius: 48px;
+            box-shadow: var(--shadow-xl), 0 0 0 8px #D5DCD9, 0 0 0 10px #FFFFFF;
+            overflow: hidden;
+            position: relative;
+            max-width: 100%;
+            max-height: 100vh;
+            transition: all 0.3s ease;
+        }
+
+        /* Dynamic Island (notch) */
+        .phone-frame::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 32px;
+            background: #1A1A1A;
+            border-radius: 20px;
+            z-index: 100;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* Subtle reflection on glass */
+        .phone-frame::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: radial-gradient(ellipse at 10% 10%, rgba(255,255,255,0.08) 0%, transparent 60%);
+            z-index: 99;
+            border-radius: 48px;
+        }
+
+        /* Grain texture overlay (subtle, artisanal) */
+        .grain-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            opacity: 0.03;
+            z-index: 9998;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 200px 200px;
+        }
+
+        /* ============================================================
+           SCREEN CONTAINER
+           ============================================================ */
+        .screen-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            background: var(--cream-bg);
+        }
+
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 0 20px;
+            padding-top: 48px; /* space for dynamic island */
+            overflow-y: auto;
+            transition: transform 0.55s cubic-bezier(0.22, 0.61, 0.36, 1), opacity 0.4s ease;
+            will-change: transform, opacity;
+            transform: translateX(100%) scale(0.96);
+            opacity: 0;
+            pointer-events: none;
+            -webkit-overflow-scrolling: touch;
+            background: var(--cream-bg);
+        }
+
+        .screen.active {
+            transform: translateX(0) scale(1);
+            opacity: 1;
+            pointer-events: auto;
+            z-index: 10;
+        }
+
+        .screen.exit-left {
+            transform: translateX(-30%) scale(0.96);
+            opacity: 0;
+        }
+
+        .screen::-webkit-scrollbar {
+            display: none;
+        }
+        .screen {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* ============================================================
+           STATUS BAR (Mock) – sits inside screen
+           ============================================================ */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0 12px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            letter-spacing: 0.3px;
+            background: transparent;
+            position: sticky;
+            top: 0;
+            z-index: 5;
+        }
+
+        /* ============================================================
+           SPLASH SCREEN
+           ============================================================ */
+        .splash-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .splash-content .icon-large {
+            font-size: 4.8rem;
+            margin-bottom: 16px;
+            background: var(--green-primary-light);
+            width: 120px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            box-shadow: 0 12px 40px rgba(42, 126, 75, 0.15);
+            animation: floatIcon 6s ease-in-out infinite;
+            position: relative;
+        }
+
+        @keyframes floatIcon {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        .splash-content h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1.05;
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+            animation: fadeUp 0.8s ease forwards;
+            opacity: 0;
+            animation-delay: 0.2s;
+        }
+
+        .splash-content h1 span {
+            color: var(--green-primary);
+        }
+
+        .splash-content .tagline {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            max-width: 260px;
+            margin: 0 auto 32px;
+            line-height: 1.5;
+            font-weight: 400;
+            animation: fadeUp 0.8s ease forwards;
+            opacity: 0;
+            animation-delay: 0.35s;
+        }
+
+        .splash-content .btn-primary {
+            animation: fadeUp 0.8s ease forwards;
+            opacity: 0;
+            animation-delay: 0.5s;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 16px 48px;
+            border-radius: var(--radius-full);
+            font-family: var(--font-family);
+            font-weight: 700;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--green-primary);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(42, 126, 75, 0.25);
+            width: 100%;
+            max-width: 280px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.08) 50%, transparent 60%);
+            animation: shimmerBtn 6s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes shimmerBtn {
+            0% { transform: translateX(-100%) rotate(25deg); }
+            100% { transform: translateX(100%) rotate(25deg); }
+        }
+
+        .btn-primary:hover {
+            background: var(--green-primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 28px rgba(42, 126, 75, 0.35);
+        }
+        .btn-primary:active {
+            transform: scale(0.96);
+        }
+        .btn-primary .arrow {
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+        .btn-primary:hover .arrow {
+            transform: translateX(6px);
+        }
+
+        @keyframes fadeUp {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ============================================================
+           HOME SCREEN
+           ============================================================ */
+        .home-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 0 8px;
+        }
+
+        .home-header .brand {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+        }
+        .home-header .brand span {
+            color: var(--green-primary);
+        }
+
+        .cart-icon {
+            position: relative;
+            font-size: 1.5rem;
+            cursor: default;
+            transition: transform 0.2s ease;
+        }
+        .cart-icon:active {
+            transform: scale(0.92);
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -6px;
+            right: -10px;
+            background: var(--gold-accent);
+            color: #1A1A1A;
+            font-size: 0.6rem;
+            font-weight: 700;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 2px 8px rgba(245, 166, 35, 0.3);
+        }
+        .cart-badge.pop {
+            animation: badgePop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes badgePop {
+            0% { transform: scale(0.6); opacity: 0; }
+            60% { transform: scale(1.3); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+
+        /* Glass-morphism search */
+        .search-bar {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: var(--radius-full);
+            padding: 12px 18px;
+            margin: 8px 0 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            box-shadow: var(--shadow-sm), inset 0 1px 2px rgba(255,255,255,0.8);
+        }
+        .search-bar span {
+            opacity: 0.7;
+        }
+
+        /* ============================================================
+           CAROUSEL
+           ============================================================ */
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow-sm);
+            background: var(--white);
+            aspect-ratio: 16 / 9;
+            touch-action: none;
+        }
+
+        .carousel-track {
+            display: flex;
+            height: 100%;
+            transition: transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+            will-change: transform;
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            height: 100%;
+            position: relative;
+            flex-shrink: 0;
+            background: var(--green-primary-light);
+            overflow: hidden;
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .carousel-slide .slide-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 24px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.55));
+            color: #fff;
+        }
+
+        .carousel-slide .slide-content h4 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 2px;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.2);
+        }
+        .carousel-slide .slide-content p {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 10px 0 14px;
+        }
+
+        .carousel-dots .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--border-light);
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .carousel-dots .dot.active {
+            background: var(--green-primary);
+            width: 24px;
+            border-radius: 4px;
+        }
+
+        /* ============================================================
+           PRODUCT GRID
+           ============================================================ */
+        .section-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 8px 0 12px;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .product-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-light);
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+            box-shadow: var(--shadow-sm);
+            cursor: pointer;
+            will-change: transform;
+        }
+        .product-card:active {
+            transform: scale(0.97);
+        }
+
+        .product-card .image-wrap {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            overflow: hidden;
+            background: var(--green-primary-light);
+        }
+        .product-card .image-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .product-card:hover .image-wrap img {
+            transform: scale(1.05);
+        }
+
+        .product-card .card-body {
+            padding: 12px 14px 14px;
+        }
+        .product-card .card-body h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+        .product-card .card-body .price {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+        .product-card .card-body .price small {
+            font-weight: 400;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .btn-add {
+            background: var(--green-primary);
+            color: #fff;
+            border: none;
+            padding: 8px 0;
+            border-radius: var(--radius-full);
+            font-family: var(--font-family);
+            font-weight: 600;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+            will-change: transform;
+        }
+        .btn-add:hover {
+            background: var(--green-primary-dark);
+        }
+        .btn-add:active {
+            transform: scale(0.94);
+        }
+        .btn-add.added {
+            background: var(--green-primary);
+            color: #fff;
+            animation: popAdd 0.3s ease;
+        }
+        @keyframes popAdd {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.12); }
+            100% { transform: scale(1); }
+        }
+
+        .home-footer {
+            text-align: center;
+            padding: 8px 0 20px;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        /* ============================================================
+           DETAIL SCREEN
+           ============================================================ */
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 4px 0 8px;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 1.6rem;
+            cursor: pointer;
+            color: var(--text-primary);
+            padding: 4px 8px;
+            border-radius: var(--radius-full);
+            transition: background 0.2s;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+        }
+        .back-btn:hover {
+            background: var(--border-light);
+        }
+        .back-btn:active {
+            transform: scale(0.92);
+        }
+
+        .detail-header .brand-small {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            flex: 1;
+        }
+        .detail-header .brand-small span {
+            color: var(--green-primary);
+        }
+
+        .detail-image {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            background: var(--green-primary-light);
+            margin: 4px 0 16px;
+            box-shadow: var(--shadow-sm);
+        }
+        .detail-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .detail-image:hover img {
+            transform: scale(1.02);
+        }
+
+        .detail-info h2 {
+            font-size: 1.7rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1.1;
+            margin-bottom: 2px;
+            letter-spacing: -0.02em;
+        }
+        .detail-info .subtitle {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        .detail-info .price-large {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        .detail-info .price-large small {
+            font-weight: 400;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .nutrition-tags {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 12px 0 16px;
+        }
+        .nutrition-tags span {
+            background: var(--green-primary-light);
+            border-radius: var(--radius-full);
+            padding: 4px 16px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: var(--green-primary-dark);
+            border: 1px solid rgba(42,126,75,0.1);
+        }
+
+        .detail-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .detail-cta {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .btn-detail {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 16px 0;
+            border-radius: var(--radius-full);
+            font-family: var(--font-family);
+            font-weight: 700;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--green-primary);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(42, 126, 75, 0.25);
+            width: 100%;
+            overflow: hidden;
+            min-height: 56px;
+            will-change: transform;
+        }
+
+        .btn-detail:hover:not(.loading):not(.success) {
+            background: var(--green-primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(42, 126, 75, 0.35);
+        }
+        .btn-detail:active:not(.loading):not(.success) {
+            transform: scale(0.96);
+        }
+
+        .btn-detail .btn-text {
+            transition: opacity 0.3s ease;
+        }
+        .btn-detail .spinner {
+            display: none;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            position: absolute;
+        }
+        .btn-detail .checkmark {
+            display: none;
+            font-size: 1.8rem;
+            line-height: 1;
+        }
+
+        .btn-detail.loading .btn-text { opacity: 0; }
+        .btn-detail.loading .spinner { display: block; }
+        .btn-detail.success .btn-text { opacity: 0; }
+        .btn-detail.success .checkmark { display: block; }
+        .btn-detail.success {
+            background: var(--green-primary);
+            box-shadow: 0 4px 16px rgba(42,126,75,0.30);
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Ripple effect */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: scale(0);
+            animation: rippleAnim 0.6s ease-out;
+            pointer-events: none;
+        }
+        @keyframes rippleAnim {
+            to { transform: scale(4); opacity: 0; }
+        }
+
+        .detail-trust {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 16px;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+        .detail-trust svg {
+            flex-shrink: 0;
+        }
+
+        /* ============================================================
+           RESPONSIVE – Phone Frame Adapts
+           ============================================================ */
+        @media (max-width: 420px) {
+            body {
+                padding: 0;
+                background: var(--cream-bg);
+            }
+            .phone-frame {
+                width: 100%;
+                height: 100vh;
+                border-radius: 0;
+                box-shadow: none;
+                border: none;
+            }
+            .phone-frame::before,
+            .phone-frame::after {
+                display: none;
+            }
+            .screen {
+                padding: 0 16px;
+                padding-top: 44px;
+            }
+            .grain-overlay {
+                display: none;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .screen {
+                padding: 0 12px;
+                padding-top: 40px;
+            }
+            .splash-content .icon-large {
+                width: 90px;
+                height: 90px;
+                font-size: 3.6rem;
+            }
+            .splash-content h1 {
+                font-size: 2.2rem;
+            }
+            .product-grid {
+                gap: 12px;
+            }
+            .detail-info h2 {
+                font-size: 1.4rem;
+            }
+        }
+
+        /* Reduce motion */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            .splash-content .icon-large {
+                animation: none;
+            }
+            .carousel-track {
+                transition: none;
+            }
+            .btn-primary::after {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="grain-overlay"></div>
+
+    <div class="phone-frame">
+        <div class="screen-container">
+
+            <!-- ============================================================
+            SCREEN 1: SPLASH
+            ============================================================ -->
+            <div class="screen active" id="screen-splash">
+                <div class="splash-content">
+                    <div class="icon-large">🍎</div>
+                    <h1>Green <span>Grocer</span></h1>
+                    <p class="tagline">Farm‑fresh organic produce,<br />delivered to your door.</p>
+                    <button class="btn-primary" id="getStartedBtn">
+                        Get Started
+                        <span class="arrow">→</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ============================================================
+            SCREEN 2: HOME
+            ============================================================ -->
+            <div class="screen" id="screen-home">
+                <div class="status-bar">
+                    <span>9:41</span>
+                    <span>📶 🔋</span>
+                </div>
+
+                <div class="home-header">
+                    <span class="brand">Green <span>Grocer</span></span>
+                    <div class="cart-icon">
+                        🛒
+                        <span class="cart-badge" id="cartBadge">3</span>
+                    </div>
+                </div>
+
+                <div class="search-bar">
+                    <span>🔍</span>
+                    <span>Search for fresh produce...</span>
+                </div>
+
+                <!-- Carousel -->
+                <div class="carousel-container" id="carouselContainer">
+                    <div class="carousel-track" id="carouselTrack"></div>
+                </div>
+                <div class="carousel-dots" id="carouselDots"></div>
+
+                <div class="section-title">Fresh Picks</div>
+                <div class="product-grid" id="productGrid"></div>
+
+                <div class="home-footer">🌱 Organic · Local · Fresh</div>
+            </div>
+
+            <!-- ============================================================
+            SCREEN 3: DETAIL
+            ============================================================ -->
+            <div class="screen" id="screen-detail">
+                <div class="status-bar">
+                    <span>9:41</span>
+                    <span>📶 🔋</span>
+                </div>
+
+                <div class="detail-header">
+                    <button class="back-btn" id="backToHomeBtn" aria-label="Go back">←</button>
+                    <span class="brand-small">Green <span>Grocer</span></span>
+                </div>
+
+                <div class="detail-image" id="detailImage">
+                    <img src="" alt="Product" id="detailImg" />
+                </div>
+
+                <div class="detail-info">
+                    <h2 id="detailName">Heirloom Tomatoes</h2>
+                    <div class="subtitle" id="detailSubtitle">Certified Organic · Non‑GMO</div>
+                    <div class="price-large" id="detailPrice">$4.99 <small>/ lb</small></div>
+
+                    <div class="nutrition-tags" id="detailNutrition">
+                        <span>🌿 50 cal / serving</span>
+                        <span>📦 2 lb avg</span>
+                        <span>🌱 Vitamin C rich</span>
+                    </div>
+
+                    <p class="detail-description" id="detailDesc">
+                        Grown in sun‑drenched fields using traditional methods. Our heirloom tomatoes are
+                        hand‑picked at peak ripeness, delivering unmatched sweetness and a vibrant, earthy flavor.
+                    </p>
+
+                    <div class="detail-cta">
+                        <button class="btn-detail" id="detailAddBtn">
+                            <span class="btn-text">Add to Cart</span>
+                            <span class="spinner"></span>
+                            <span class="checkmark">✓</span>
+                        </button>
+                    </div>
+
+                    <div class="detail-trust">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        <span>Secure checkout · SSL encrypted</span>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /screen-container -->
+    </div><!-- /phone-frame -->
+
+    <!-- ============================================================
+    JAVASCRIPT – All Interactions
+    ============================================================ -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // ==========================================================
+            // DATA
+            // ==========================================================
+            const products = [
+                {
+                    id: 1,
+                    name: 'Heirloom Tomatoes',
+                    price: '$4.99',
+                    unit: '/ lb',
+                    subtitle: 'Certified Organic · Non‑GMO',
+                    nutrition: ['🌿 50 cal / serving', '📦 2 lb avg', '🌱 Vitamin C rich'],
+                    description: 'Grown in sun‑drenched fields using traditional methods. Our heirloom tomatoes are hand‑picked at peak ripeness, delivering unmatched sweetness and a vibrant, earthy flavor.',
+                    imageSeed: 'tomato',
+                    imageUrl: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&h=600&fit=crop&auto=format'
+                },
+                {
+                    id: 2,
+                    name: 'Organic Avocados',
+                    price: '$6.49',
+                    unit: '/ bag',
+                    subtitle: 'Certified Organic · Non‑GMO',
+                    nutrition: ['🌿 160 cal / serving', '📦 4 ct', '🥑 Heart-healthy fats'],
+                    description: 'Creamy, buttery avocados harvested at the perfect ripeness. Rich in healthy monounsaturated fats and packed with essential nutrients.',
+                    imageSeed: 'avocado',
+                    imageUrl: 'https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=600&h=600&fit=crop&auto=format'
+                },
+                {
+                    id: 3,
+                    name: 'Kale Greens',
+                    price: '$3.29',
+                    unit: '/ bunch',
+                    subtitle: 'Certified Organic · Non‑GMO',
+                    nutrition: ['🌿 35 cal / serving', '📦 1 bunch', '🥗 Rich in iron'],
+                    description: 'Tender, nutrient‑dense kale leaves grown in fertile soil. A powerhouse of vitamins A, C, and K, perfect for salads and smoothies.',
+                    imageSeed: 'kale',
+                    imageUrl: 'https://images.unsplash.com/photo-1524179091875-bf1f5e8eaa08?w=600&h=600&fit=crop&auto=format'
+                },
+                {
+                    id: 4,
+                    name: 'Mixed Berries',
+                    price: '$5.99',
+                    unit: '/ clamshell',
+                    subtitle: 'Certified Organic · Non‑GMO',
+                    nutrition: ['🌿 80 cal / serving', '📦 12 oz', '🍓 Antioxidant-rich'],
+                    description: 'A vibrant mix of ripe strawberries, blueberries, and raspberries. Bursting with natural sweetness and packed with antioxidants.',
+                    imageSeed: 'berries',
+                    imageUrl: 'https://images.unsplash.com/photo-1571513722275-4b41940f54b8?w=600&h=600&fit=crop&auto=format'
+                }
+            ];
+
+            const featuredProducts = [
+                products[0], // Tomatoes
+                products[1], // Avocados
+                products[3]  // Berries
+            ];
+
+            // ==========================================================
+            // DOM REFS
+            // ==========================================================
+            const screens = document.querySelectorAll('.screen');
+            const splash = document.getElementById('screen-splash');
+            const home = document.getElementById('screen-home');
+            const detail = document.getElementById('screen-detail');
+
+            const productGrid = document.getElementById('productGrid');
+            const detailImg = document.getElementById('detailImg');
+            const detailName = document.getElementById('detailName');
+            const detailSubtitle = document.getElementById('detailSubtitle');
+            const detailPrice = document.getElementById('detailPrice');
+            const detailNutrition = document.getElementById('detailNutrition');
+            const detailDesc = document.getElementById('detailDesc');
+            const detailAddBtn = document.getElementById('detailAddBtn');
+            const cartBadge = document.getElementById('cartBadge');
+
+            const carouselTrack = document.getElementById('carouselTrack');
+            const carouselDots = document.getElementById('carouselDots');
+            const carouselContainer = document.getElementById('carouselContainer');
+
+            let currentProductId = 1;
+            let currentSlide = 0;
+            let slideInterval = null;
+            let isDragging = false;
+            let startX = 0;
+            let currentTranslate = 0;
+
+            // ==========================================================
+            // NAVIGATION
+            // ==========================================================
+            function navigateTo(targetScreen) {
+                screens.forEach(s => {
+                    s.classList.remove('active', 'exit-left');
+                });
+                targetScreen.classList.add('active');
+            }
+
+            // ==========================================================
+            // CAROUSEL
+            // ==========================================================
+            function renderCarousel() {
+                carouselTrack.innerHTML = '';
+                featuredProducts.forEach((item) => {
+                    const slide = document.createElement('div');
+                    slide.className = 'carousel-slide';
+                    slide.innerHTML = `
+                        <img src="${item.imageUrl}" alt="${item.name}" loading="lazy" />
+                        <div class="slide-content">
+                            <h4>${item.name}</h4>
+                            <p>${item.price} · Fresh organic</p>
+                        </div>
+                    `;
+                    carouselTrack.appendChild(slide);
+                });
+
+                // Dots
+                carouselDots.innerHTML = '';
+                featuredProducts.forEach((_, index) => {
+                    const dot = document.createElement('button');
+                    dot.className = 'dot' + (index === 0 ? ' active' : '');
+                    dot.dataset.index = index;
+                    dot.setAttribute('aria-label', `Go to slide ${index+1}`);
+                    dot.addEventListener('click', () => goToSlide(index));
+                    carouselDots.appendChild(dot);
+                });
+
+                goToSlide(0);
+                startAutoSlide();
+            }
+
+            function goToSlide(index) {
+                const slides = carouselTrack.children;
+                if (index < 0) index = slides.length - 1;
+                if (index >= slides.length) index = 0;
+                currentSlide = index;
+                carouselTrack.style.transform = `translateX(-${index * 100}%)`;
+
+                document.querySelectorAll('.dot').forEach((dot, i) => {
+                    dot.classList.toggle('active', i === index);
+                });
+            }
+
+            function startAutoSlide() {
+                if (slideInterval) clearInterval(slideInterval);
+                slideInterval = setInterval(() => {
+                    goToSlide(currentSlide + 1);
+                }, 4000);
+            }
+
+            function pauseAutoSlide() {
+                if (slideInterval) {
+                    clearInterval(slideInterval);
+                    slideInterval = null;
+                }
+            }
+
+            function resumeAutoSlide() {
+                if (!slideInterval) startAutoSlide();
+            }
+
+            // Touch / Pointer events for drag
+            carouselContainer.addEventListener('pointerdown', function(e) {
+                pauseAutoSlide();
+                isDragging = true;
+                startX = e.clientX;
+                currentTranslate = currentSlide * -100;
+                this.style.transition = 'none';
+            });
+
+            document.addEventListener('pointermove', function(e) {
+                if (!isDragging) return;
+                const delta = (e.clientX - startX) / carouselContainer.offsetWidth * 100;
+                const newTranslate = currentTranslate + delta;
+                carouselTrack.style.transform = `translateX(${newTranslate}%)`;
+            });
+
+            document.addEventListener('pointerup', function(e) {
+                if (!isDragging) return;
+                isDragging = false;
+                carouselContainer.style.transition = '';
+                const delta = (e.clientX - startX) / carouselContainer.offsetWidth * 100;
+                if (delta < -20) {
+                    goToSlide(currentSlide + 1);
+                } else if (delta > 20) {
+                    goToSlide(currentSlide - 1);
+                } else {
+                    goToSlide(currentSlide);
+                }
+                resumeAutoSlide();
+            });
+
+            // Pause on hover
+            carouselContainer.addEventListener('mouseenter', pauseAutoSlide);
+            carouselContainer.addEventListener('mouseleave', resumeAutoSlide);
+
+            // ==========================================================
+            // PRODUCT GRID
+            // ==========================================================
+            function renderProducts() {
+                productGrid.innerHTML = '';
+                products.forEach(p => {
+                    const card = document.createElement('div');
+                    card.className = 'product-card';
+                    card.dataset.productId = p.id;
+                    card.innerHTML = `
+                        <div class="image-wrap">
+                            <img src="${p.imageUrl}" alt="${p.name}" loading="lazy" />
+                        </div>
+                        <div class="card-body">
+                            <h4>${p.name}</h4>
+                            <div class="price">${p.price} <small>${p.unit}</small></div>
+                            <button class="btn-add" data-product="${p.name}">Add</button>
+                        </div>
+                    `;
+                    productGrid.appendChild(card);
+
+                    // Card tap → Detail
+                    card.addEventListener('click', function(e) {
+                        if (e.target.classList.contains('btn-add')) return;
+                        const id = parseInt(this.dataset.productId);
+                        showDetail(id);
+                    });
+
+                    // Add button micro-interaction
+                    const addBtn = card.querySelector('.btn-add');
+                    addBtn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const originalText = this.textContent;
+                        this.textContent = '✓ Added';
+                        this.classList.add('added');
+                        setTimeout(() => {
+                            this.textContent = originalText;
+                            this.classList.remove('added');
+                        }, 1200);
+                        incrementCart();
+                    });
+                });
+            }
+
+            // ==========================================================
+            // DETAIL SCREEN
+            // ==========================================================
+            function showDetail(productId) {
+                const p = products.find(prod => prod.id === productId);
+                if (!p) return;
+                currentProductId = p.id;
+
+                detailImg.src = p.imageUrl;
+                detailImg.alt = p.name;
+                detailName.textContent = p.name;
+                detailSubtitle.textContent = p.subtitle;
+                detailPrice.innerHTML = `${p.price} <small>${p.unit}</small>`;
+                detailNutrition.innerHTML = p.nutrition.map(tag => `<span>${tag}</span>`).join('');
+                detailDesc.textContent = p.description;
+
+                // Reset button
+                detailAddBtn.classList.remove('loading', 'success');
+                const textSpan = detailAddBtn.querySelector('.btn-text');
+                if (textSpan) textSpan.textContent = 'Add to Cart';
+
+                navigateTo(detail);
+            }
+
+            // ==========================================================
+            // CART BADGE
+            // ==========================================================
+            function incrementCart() {
+                let count = parseInt(cartBadge.textContent) || 0;
+                cartBadge.textContent = count + 1;
+                cartBadge.classList.remove('pop');
+                void cartBadge.offsetWidth; // reflow
+                cartBadge.classList.add('pop');
+
+                // Save to localStorage
+                try {
+                    localStorage.setItem('greenGrocerCart', cartBadge.textContent);
+                } catch (_) {}
+            }
+
+            function loadCartFromStorage() {
+                try {
+                    const saved = localStorage.getItem('greenGrocerCart');
+                    if (saved !== null) {
+                        cartBadge.textContent = saved;
+                    }
+                } catch (_) {}
+            }
+
+            // ==========================================================
+            // DETAIL "ADD TO CART" MICRO-INTERACTION (3 states)
+            // ==========================================================
+            detailAddBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (this.classList.contains('loading') || this.classList.contains('success')) return;
+
+                // Ripple effect
+                const rect = this.getBoundingClientRect();
+                const ripple = document.createElement('span');
+                ripple.className = 'ripple';
+                const size = Math.max(rect.width, rect.height);
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = (e.clientX - rect.left - size/2) + 'px';
+                ripple.style.top = (e.clientY - rect.top - size/2) + 'px';
+                this.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 700);
+
+                // State 1 → Loading
+                this.classList.add('loading');
+
+                setTimeout(() => {
+                    // Loading → Success
+                    this.classList.remove('loading');
+                    this.classList.add('success');
+                    incrementCart();
+
+                    // Reset after 2.5s
+                    setTimeout(() => {
+                        this.classList.remove('success');
+                        const textSpan = this.querySelector('.btn-text');
+                        if (textSpan) textSpan.textContent = 'Add to Cart';
+                    }, 2500);
+                }, 1800);
+            });
+
+            // ==========================================================
+            // BACK BUTTONS
+            // ==========================================================
+            document.getElementById('getStartedBtn').addEventListener('click', (e) => {
+                e.preventDefault();
+                navigateTo(home);
+            });
+
+            document.getElementById('backToHomeBtn').addEventListener('click', (e) => {
+                e.preventDefault();
+                navigateTo(home);
+            });
+
+            // ==========================================================
+            // KEYBOARD NAVIGATION (within phone frame)
+            // ==========================================================
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    if (detail.classList.contains('active')) {
+                        navigateTo(home);
+                    } else if (home.classList.contains('active')) {
+                        navigateTo(splash);
+                    }
+                }
+            });
+
+            // ==========================================================
+            // INIT
+            // ==========================================================
+            loadCartFromStorage();
+            renderCarousel();
+            renderProducts();
+
+            console.log('✅ Green Grocer – Premium Living Prototype ready.');
+        });
+    </script>
+</body>
+</html>
